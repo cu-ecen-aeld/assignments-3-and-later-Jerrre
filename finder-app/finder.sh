@@ -20,4 +20,4 @@ fi
 filecount=$(find $filesdir/ | wc -l)
 linescount=$(grep -r "$searchstr" $filesdir/* | wc -l)
 
-echo The number of files are $filecount and the number of matching lines are $linescount
+echo The number of files are $((--filecount)) and the number of matching lines are $linescount
