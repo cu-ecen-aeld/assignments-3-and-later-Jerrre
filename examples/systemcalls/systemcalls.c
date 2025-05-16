@@ -75,19 +75,6 @@ bool do_exec(int count, ...)
     pid_t pid;
     int status;
 
-    char first = *command[0];
-    char last = *command[count - 1];
-    char slash = '/';
-
-    if(first != slash){
-        printf("not absolute path\n");
-        return false;
-    }
-    if (last != slash){
-        printf("not absolute path\n");
-        return false;
-    }
-
     pid = fork();
     if (pid == -1){
         printf("fork fail\n");
@@ -100,6 +87,9 @@ bool do_exec(int count, ...)
     if (waitpid(pid, &status, 0) == -1){
         printf("wait fail\n");
         return false;
+    }
+    else if(WIFEXITED(status)){
+        return !WEXITSTATUS(status);
     }
 
     va_end(args);
@@ -160,6 +150,9 @@ bool do_exec_redirect(const char *outputfile, int count, ...)
         printf("wait fail\n");
         close(fd);
         return false;
+    }
+    else if(WIFEXITED(status)){
+        return !WEXITSTATUS(status);
     }
     va_end(args);
     close(fd);
