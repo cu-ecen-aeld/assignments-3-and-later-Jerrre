@@ -100,12 +100,16 @@ ${CROSS_COMPILE}readelf -a bin/busybox | grep "program interpreter"
 ${CROSS_COMPILE}readelf -a bin/busybox | grep "Shared library"
 
 # TODO: Add library dependencies to rootfs
-TOOLSDIR=/home/jere/Documents/tools
-LIBDIR=${TOOLSDIR}/arm-gnu-toolchain-13.3.rel1-x86_64-aarch64-none-linux-gnu/aarch64-none-linux-gnu/libc
-cp ${LIBDIR}/lib/ld-linux-aarch64.so.1 lib
-cp ${LIBDIR}/lib64/libm.so.6 lib64
-cp ${LIBDIR}/lib64/libresolv.so.2 lib64
-cp ${LIBDIR}/lib64/libc.so.6 lib64
+COMPILERLOC=`type -P -a ${CROSS_COMPILE}readelf`
+TOOLSDIR=$(dirname "$COMPILERLOC")
+cd "$TOOLSDIR"
+cd ../aarch64-none-linux-gnu/libc
+
+cp lib/ld-linux-aarch64.so.1 ${OUTDIR}/rootfs/lib
+cp lib64/libm.so.6 ${OUTDIR}/rootfs/lib64
+cp lib64/libresolv.so.2 ${OUTDIR}/rootfs/lib64
+cp lib64/libc.so.6 ${OUTDIR}/rootfs/lib64
+cd "$OUTDIR"/rootfs
 
 # TODO: Make device nodes
 sudo mknod -m 666 dev/null c 1 3
